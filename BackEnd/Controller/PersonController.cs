@@ -34,7 +34,6 @@ namespace BackEnd.Controller
         {
             using (TestdbContext db = new TestdbContext())
             {
-                //Console.WriteLine(json);
                 Person? person = JsonSerializer.Deserialize<Person>(json);
                 db.Persons.Add(new Person()
                 {
@@ -96,37 +95,23 @@ namespace BackEnd.Controller
             using (TestdbContext db = new TestdbContext())
             {
                 Person? temp = JsonSerializer.Deserialize<Person>(json);
-                if(await db.Persons.FindAsync(temp.Personid) is Person found)
+                if (await db.Persons.FindAsync(temp.Personid) is Person found)
                 {
                     found.Personname = temp.Personname;
                     found.Passwordhash = temp.Passwordhash;
                     found.Salt = temp.Salt;
                 }
                 await db.SaveChangesAsync();
-                    var response = context.Response;
-                    string responseText = "OK";
-                    byte[] buffer = Encoding.UTF8.GetBytes(responseText);
-                    response.ContentLength64 = buffer.Length;
-                    response.ContentType = "text/html";
-                    response.ContentEncoding = Encoding.UTF8;
-                    using Stream output = response.OutputStream;
-                    await output.WriteAsync(buffer);
-                    await output.FlushAsync();
-                    Console.WriteLine("Запрос обработан");
-                //}
-                //else
-                //{
-                //    var response = context.Response;
-                //    string responseText = "Person not find";
-                //    byte[] buffer = Encoding.UTF8.GetBytes(responseText);
-                //    response.ContentLength64 = buffer.Length;
-                //    response.ContentType = "text/html";
-                //    response.ContentEncoding = Encoding.UTF8;
-                //    using Stream output = response.OutputStream;
-                //    await output.WriteAsync(buffer);
-                //    await output.FlushAsync();
-                //    Console.WriteLine("Запрос обработан");
-                //}
+                var response = context.Response;
+                string responseText = "OK";
+                byte[] buffer = Encoding.UTF8.GetBytes(responseText);
+                response.ContentLength64 = buffer.Length;
+                response.ContentType = "text/html";
+                response.ContentEncoding = Encoding.UTF8;
+                using Stream output = response.OutputStream;
+                await output.WriteAsync(buffer);
+                await output.FlushAsync();
+                Console.WriteLine("Запрос обработан");
             }
         }
     }
