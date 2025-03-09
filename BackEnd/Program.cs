@@ -20,6 +20,7 @@ while (true)
         switch (table)
         {
             case "person": PersonController.AddPerson(query, context); break;
+            case "verifyPasswordPerson": break;
         }
     }
     else if (method == "GET")

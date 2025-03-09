@@ -121,6 +121,15 @@ namespace BackEnd.Controller
                 Console.WriteLine("Запрос обработан");
             }
         }
+        public async static Task ChekPassword(string json, HttpListenerContext context)
+        {
+            using (TestdbContext db = new TestdbContext())
+            {
+                JsonUser? jsonUser = JsonSerializer.Deserialize<JsonUser>(json);
+                var user = await db.Persons.FirstOrDefaultAsync(u => u.Personname == jsonUser!.UserName);
+                bool isPasswordValid = VerifyPassword(jsonUser!.Password, user!.Passwordhash, user.Salt);
+            }
+        }
         private static byte[] GenerateSalt()
         {
             byte[] salt = new byte[16];
@@ -141,6 +150,13 @@ namespace BackEnd.Controller
                 byte[] hashBytes = sha256.ComputeHash(saltedPassword);
                 return Convert.ToBase64String(hashBytes);
             }
+        }
+        //Проверка пароля
+        public bool VerifyPassword(string enteredPassword, string storedHash, string storeSalt)
+        {
+            byte[] salt = Convert.FromBase64String(storeSalt);
+            string hashEnteredPassword = HashPassword(enteredPassword, salt);
+            return hashEnteredPassword == storedHash;
         }
         private static void SendResponse(HttpListenerContext context, string message, int statusCode)
         {
