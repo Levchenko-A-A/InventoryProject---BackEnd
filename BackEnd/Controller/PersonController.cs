@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -35,11 +36,17 @@ namespace BackEnd.Controller
             using (TestdbContext db = new TestdbContext())
             {
                 Person? person = JsonSerializer.Deserialize<Person>(json);
+                if(person==null)
+                {
+                    SendResponse(context, "Ошибка: некорректные данные", 400);
+                }
+                byte[] salt = GenerateSalt();
+                string hashedPassword = HashPassword(person!.Passwordhash, salt);
                 db.Persons.Add(new Person()
                 {
                     Personname = person.Personname,
-                    Passwordhash = person.Passwordhash,
-                    Salt = person.Salt,
+                    Passwordhash = hashedPassword,
+                    Salt = Convert.ToBase64String(salt)
                 });
                 await db.SaveChangesAsync();
                 var response = context.Response;
@@ -112,6 +119,41 @@ namespace BackEnd.Controller
                 await output.WriteAsync(buffer);
                 await output.FlushAsync();
                 Console.WriteLine("Запрос обработан");
+            }
+        }
+        private static byte[] GenerateSalt()
+        {
+            byte[] salt = new byte[16];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(salt);
+            }
+            return salt;
+        }
+        private static string HashPassword(string password, byte[] salt)
+        {
+            using(var sha256 = SHA256.Create())
+            {
+                byte[] passwordByte = Encoding.UTF8.GetBytes(password);
+                byte[] saltedPassword = new byte[passwordByte.Length + salt.Length];
+                Buffer.BlockCopy(passwordByte, 0, saltedPassword, 0, passwordByte.Length);
+                Buffer.BlockCopy(salt, 0, saltedPassword, passwordByte.Length, salt.Length);
+                byte[] hashBytes = sha256.ComputeHash(saltedPassword);
+                return Convert.ToBase64String(hashBytes);
+            }
+        }
+        private static void SendResponse(HttpListenerContext context, string message, int statusCode)
+        {
+            var response = context.Response;
+            byte[] buffer = Encoding.UTF8.GetBytes(message);
+            response.ContentLength64 = buffer.Length;
+            response.ContentType = "text/plain";
+            response.ContentEncoding = Encoding.UTF8;
+            response.StatusCode = statusCode;
+
+            using (Stream output = response.OutputStream)
+            {
+                output.Write(buffer, 0, buffer.Length);
             }
         }
     }
