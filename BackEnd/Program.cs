@@ -19,8 +19,8 @@ while (true)
     {
         switch (table)
         {
-            case "person": PersonController.AddPerson(query, context); break;
-            case "verifyPasswordPerson": break;
+            case "person": PersonController.addPerson(query, context); break;
+            case "verifyPasswordPerson": PersonController.chekPassword(query, context); break;
         }
     }
     else if (method == "GET")
@@ -34,7 +34,7 @@ while (true)
     {
         switch (table)
         {
-            case "person": PersonController.PutPerson(query, context); break;
+            case "person": PersonController.putPerson(query, context); break;
         }
     }
     else if (method == "DELETE")
