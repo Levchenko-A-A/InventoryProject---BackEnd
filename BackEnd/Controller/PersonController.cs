@@ -73,35 +73,27 @@ namespace BackEnd.Controller
             int id = JsonSerializer.Deserialize<int>(json);
             using (TestdbContext db = new TestdbContext())
             {
+                string responseText;
                 Person person = db.Persons.Find(id)!;
                 if (person != null)
                 {
                     db.Persons.Remove(person);
                     await db.SaveChangesAsync();
-                    var response = context.Response;
-                    string responseText = "OK";
-                    byte[] buffer = Encoding.UTF8.GetBytes(responseText);
-                    response.ContentLength64 = buffer.Length;
-                    response.ContentType = "text/html";
-                    response.ContentEncoding = Encoding.UTF8;
-                    using Stream output = response.OutputStream;
-                    await output.WriteAsync(buffer);
-                    await output.FlushAsync();
-                    Console.WriteLine("Запрос обработан");
+                    responseText = "OK";   
                 }
                 else
                 {
-                    var response = context.Response;
-                    string responseText = "Person not find";
-                    byte[] buffer = Encoding.UTF8.GetBytes(responseText);
-                    response.ContentLength64 = buffer.Length;
-                    response.ContentType = "text/html";
-                    response.ContentEncoding = Encoding.UTF8;
-                    using Stream output = response.OutputStream;
-                    await output.WriteAsync(buffer);
-                    await output.FlushAsync();
-                    Console.WriteLine("Запрос обработан");
+                    responseText = "Error";
                 }
+                var response = context.Response;
+                byte[] buffer = Encoding.UTF8.GetBytes(responseText);
+                response.ContentLength64 = buffer.Length;
+                response.ContentType = "text/html";
+                response.ContentEncoding = Encoding.UTF8;
+                using Stream output = response.OutputStream;
+                await output.WriteAsync(buffer);
+                await output.FlushAsync();
+                Console.WriteLine("Запрос обработан");
             }
         }
         public async static void putPerson(string json, HttpListenerContext context)
