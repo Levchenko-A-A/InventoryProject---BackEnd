@@ -35,22 +35,30 @@ namespace BackEnd.Controller
         {
             using (TestdbContext db = new TestdbContext())
             {
+                string responseText;
                 Person? person = JsonSerializer.Deserialize<Person>(json);
                 if(person==null)
                 {
                     SendResponse(context, "Ошибка: некорректные данные", 400);
                 }
-                byte[] salt = GenerateSalt();
-                string hashedPassword = HashPassword(person!.Passwordhash, salt);
-                db.Persons.Add(new Person()
+                Person? user = await db.Persons.FirstOrDefaultAsync(u => u.Personname == person.Personname);
+                if (user == null)
                 {
-                    Personname = person.Personname,
-                    Passwordhash = hashedPassword,
-                    Salt = Convert.ToBase64String(salt)
-                });
-                await db.SaveChangesAsync();
+                    byte[] salt = GenerateSalt();
+                    string hashedPassword = HashPassword(person!.Passwordhash, salt);
+                    db.Persons.Add(new Person()
+                    {
+                        Personname = person.Personname,
+                        Passwordhash = hashedPassword,
+                        Salt = Convert.ToBase64String(salt)
+                    });
+                    await db.SaveChangesAsync();
+                    responseText = "OK";
+                }
+                else
+                    responseText = "Error";
+                Console.WriteLine("Запрос обработан");
                 var response = context.Response;
-                string responseText = "OK";
                 byte[] buffer = Encoding.UTF8.GetBytes(responseText);
                 response.ContentLength64 = buffer.Length;
                 response.ContentType = "text/html";
@@ -58,7 +66,6 @@ namespace BackEnd.Controller
                 using Stream output = response.OutputStream;
                 await output.WriteAsync(buffer);
                 await output.FlushAsync();
-                Console.WriteLine("Запрос обработан");
             }
         }
         public async static void delPerson(string json, HttpListenerContext context)
