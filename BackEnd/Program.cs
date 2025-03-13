@@ -28,6 +28,7 @@ while (true)
         switch (table)
         {
             case "person": PersonController.getPerson(context); break;
+            case ""
         }
     }
     else if (method == "PUT")

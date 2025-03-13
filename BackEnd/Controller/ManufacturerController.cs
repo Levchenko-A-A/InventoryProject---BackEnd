@@ -17,17 +17,21 @@ namespace BackEnd.Controller
             {
                 List<Manufacturer> manufacturer = db.Manufacturers.ToList();
                 string json = JsonSerializer.Serialize<List<Manufacturer>>(manufacturer);
-                var response = context.Response;
                 string responseText = json;
-                byte[] buffer = Encoding.UTF8.GetBytes(responseText);
-                response.ContentLength64 = buffer.Length;
-                response.ContentType = "text/html";
-                response.ContentEncoding = Encoding.UTF8;
-                using Stream output = response.OutputStream;
-                await output.WriteAsync(buffer);
-                await output.FlushAsync();
-                Console.WriteLine("Запрос обработан");
+                SendResponse(context, responseText);
             }
+        }
+        public async static void SendResponse(HttpListenerContext context, string message)
+        {
+            var response = context.Response;
+            byte[] buffer = Encoding.UTF8.GetBytes(message);
+            response.ContentLength64 = buffer.Length;
+            response.ContentType = "application/json";
+            response.ContentEncoding = Encoding.UTF8;
+            using Stream output = response.OutputStream;
+            await output.WriteAsync(buffer);
+            await output.FlushAsync();
+            Console.WriteLine("Запрос обработан");
         }
     }
 }
