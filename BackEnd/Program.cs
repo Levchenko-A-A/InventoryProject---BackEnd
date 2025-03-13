@@ -10,16 +10,18 @@ while (true)
     var context = await server.GetContextAsync();       //ожидает входящие запросы
     var body = context.Request.InputStream;
     var method = context.Request.HttpMethod;
-    Console.WriteLine(method);
     var encoding = context.Request.ContentEncoding;
     var reader = new StreamReader(body, encoding);
     string query = reader.ReadToEnd();
     string table = context.Request.Headers[0]!;
+    Console.WriteLine($"Metod: {method}");
+    Console.WriteLine($"Table: {table}");
     if (method == "POST")
     {
         switch (table)
         {
             case "person": PersonController.addPerson(query, context); break;
+            case "manufacturer": ManufacturerController.addManufacturer(query, context); break;
             case "verifyPasswordPerson": PersonController.chekPassword(query, context); break;
         }
     }
@@ -43,6 +45,7 @@ while (true)
         switch (table)
         {
             case "person": PersonController.delPerson(query, context); break;
+            case "manufacturer": ManufacturerController.delManufacturer(query, context); break;
         }
     }
 }
