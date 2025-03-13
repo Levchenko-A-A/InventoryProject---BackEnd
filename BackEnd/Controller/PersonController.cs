@@ -13,22 +13,14 @@ namespace BackEnd.Controller
 {
     class PersonController
     {
-        public async static void getPerson(HttpListenerContext context)
+        public static void getPerson(HttpListenerContext context)
         {
             using (TestdbContext db = new TestdbContext())
             {
                 List<Person> clients = db.Persons.ToList();
                 string json = JsonSerializer.Serialize<List<Person>>(clients);
-                var response = context.Response;
                 string responseText = json;
-                byte[] buffer = Encoding.UTF8.GetBytes(responseText);
-                response.ContentLength64 = buffer.Length;
-                response.ContentType = "text/html";
-                response.ContentEncoding = Encoding.UTF8;
-                using Stream output = response.OutputStream;
-                await output.WriteAsync(buffer);
-                await output.FlushAsync();
-                Console.WriteLine("Запрос обработан");
+                SendResponse(context, responseText);
             }
         }
         public async static void addPerson(string json, HttpListenerContext context)
@@ -39,7 +31,7 @@ namespace BackEnd.Controller
                 Person? person = JsonSerializer.Deserialize<Person>(json);
                 if(person==null)
                 {
-                    SendResponse(context, "Ошибка: некорректные данные", 400);
+                    SendResponse(context, "Ошибка: некорректные данные");
                 }
                 Person? user = await db.Persons.FirstOrDefaultAsync(u => u.Personname == person.Personname);
                 if (user == null)
@@ -57,7 +49,7 @@ namespace BackEnd.Controller
                 }
                 else
                     responseText = "Error";
-                Console.WriteLine("Запрос обработан");
+
                 var response = context.Response;
                 byte[] buffer = Encoding.UTF8.GetBytes(responseText);
                 response.ContentLength64 = buffer.Length;
@@ -66,6 +58,7 @@ namespace BackEnd.Controller
                 using Stream output = response.OutputStream;
                 await output.WriteAsync(buffer);
                 await output.FlushAsync();
+                Console.WriteLine("Запрос обработан");
             }
         }
         public async static void delPerson(string json, HttpListenerContext context)
@@ -85,15 +78,7 @@ namespace BackEnd.Controller
                 {
                     responseText = "Error";
                 }
-                var response = context.Response;
-                byte[] buffer = Encoding.UTF8.GetBytes(responseText);
-                response.ContentLength64 = buffer.Length;
-                response.ContentType = "text/html";
-                response.ContentEncoding = Encoding.UTF8;
-                using Stream output = response.OutputStream;
-                await output.WriteAsync(buffer);
-                await output.FlushAsync();
-                Console.WriteLine("Запрос обработан");
+                SendResponse(context, responseText);
             }
         }
         public async static void putPerson(string json, HttpListenerContext context)
@@ -108,16 +93,8 @@ namespace BackEnd.Controller
                     found.Salt = temp.Salt;
                 }
                 await db.SaveChangesAsync();
-                var response = context.Response;
                 string responseText = "OK";
-                byte[] buffer = Encoding.UTF8.GetBytes(responseText);
-                response.ContentLength64 = buffer.Length;
-                response.ContentType = "text/html";
-                response.ContentEncoding = Encoding.UTF8;
-                using Stream output = response.OutputStream;
-                await output.WriteAsync(buffer);
-                await output.FlushAsync();
-                Console.WriteLine("Запрос обработан");
+                SendResponse(context, responseText);
             }
         }
         public async static void chekPassword(string json, HttpListenerContext context)
@@ -128,7 +105,7 @@ namespace BackEnd.Controller
                 var jsonUser = JsonSerializer.Deserialize<JsonUser>(json);
                 if (jsonUser == null)
                 {
-                    SendResponse(context, "Ошибка: некорректные данные", 400);
+                    SendResponse(context, "Ошибка: некорректные данные");
                 }
                 Person? user = await db.Persons.FirstAsync(u => u.Personname == jsonUser!.UserName);
                 string per = jsonUser!.Password!.ToString();
@@ -138,16 +115,8 @@ namespace BackEnd.Controller
                 answer = isPasswordValid ? "ok" : "error";
             }
             string jsonTwo = JsonSerializer.Serialize<string>(answer);
-            var response = context.Response;
             string responseText = jsonTwo;
-            byte[] buffer = Encoding.UTF8.GetBytes(responseText);
-            response.ContentLength64 = buffer.Length;
-            response.ContentType = "application/json";
-            response.ContentEncoding = Encoding.UTF8;
-            using Stream output = response.OutputStream;
-            await output.WriteAsync(buffer);
-            await output.FlushAsync();
-            Console.WriteLine("Запрос обработан");
+            SendResponse(context, responseText);
         }
         private static byte[] GenerateSalt()
         {
@@ -176,19 +145,18 @@ namespace BackEnd.Controller
             string hashEnteredPassword = HashPassword(enteredPassword, salt);
             return hashEnteredPassword == storedHash;
         }
-        private static void SendResponse(HttpListenerContext context, string message, int statusCode)
+
+        public async static void SendResponse(HttpListenerContext context, string message)
         {
             var response = context.Response;
             byte[] buffer = Encoding.UTF8.GetBytes(message);
             response.ContentLength64 = buffer.Length;
-            response.ContentType = "text/plain";
+            response.ContentType = "application/json";
             response.ContentEncoding = Encoding.UTF8;
-            response.StatusCode = statusCode;
-
-            using (Stream output = response.OutputStream)
-            {
-                output.Write(buffer, 0, buffer.Length);
-            }
+            using Stream output = response.OutputStream;
+            await output.WriteAsync(buffer);
+            await output.FlushAsync();
+            Console.WriteLine("Запрос обработан");
         }
     }
 }
