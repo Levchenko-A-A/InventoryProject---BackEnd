@@ -28,7 +28,7 @@ while (true)
         switch (table)
         {
             case "person": PersonController.getPerson(context); break;
-            case ""
+            case "manufacturer": ManufacturerController.getManufacturer(context); break;
         }
     }
     else if (method == "PUT")
