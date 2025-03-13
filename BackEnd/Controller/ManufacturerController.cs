@@ -77,6 +77,29 @@ namespace BackEnd.Controller
                 SendResponse(context, responseText);
             }
         }
+        public async static void UpdatePerson(string json, HttpListenerContext context)
+        {
+            using (TestdbContext db = new TestdbContext())
+            {
+                string responseText;
+                Manufacturer? temp = JsonSerializer.Deserialize<Manufacturer>(json);
+                if (temp == null)
+                {
+                    responseText = "error";
+                }
+                else
+                {
+                    if (await db.Manufacturers.FindAsync(temp.Manufacturerid) is Manufacturer found)
+                    {
+                        found.Name = temp.Name;
+                        found.Description = temp.Description;
+                    }
+                    await db.SaveChangesAsync();
+                    responseText = "OK";
+                }
+                SendResponse(context, responseText);
+            }
+        }
         public async static void SendResponse(HttpListenerContext context, string message)
         {
             var response = context.Response;

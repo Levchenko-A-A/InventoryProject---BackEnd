@@ -81,7 +81,7 @@ namespace BackEnd.Controller
                 SendResponse(context, responseText);
             }
         }
-        public async static void putPerson(string json, HttpListenerContext context)
+        public async static void UpdatePerson(string json, HttpListenerContext context)
         {
             using (TestdbContext db = new TestdbContext())
             {

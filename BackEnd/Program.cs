@@ -37,7 +37,7 @@ while (true)
     {
         switch (table)
         {
-            case "person": PersonController.putPerson(query, context); break;
+            case "manufacturer": ManufacturerController.UpdatePerson(query, context); break;
         }
     }
     else if (method == "DELETE")
