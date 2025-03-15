@@ -12,7 +12,7 @@ namespace BackEnd.Controller
 {
     class CategoryController
     {
-        public async static void getManufacturer(HttpListenerContext context)
+        public async static void getCategory(HttpListenerContext context)
         {
             using (TestdbContext db = new TestdbContext())
             {
@@ -22,7 +22,7 @@ namespace BackEnd.Controller
                 SendResponse(context, responseText);
             }
         }
-        public async static void addManufacturer(string json, HttpListenerContext context)
+        public async static void addCategory(string json, HttpListenerContext context)
         {
             using (TestdbContext db = new TestdbContext())
             {
@@ -48,7 +48,7 @@ namespace BackEnd.Controller
                 SendResponse(context, responseText);
             }
         }
-        public async static void delManufacturer(string json, HttpListenerContext context)
+        public async static void delCategory(string json, HttpListenerContext context)
         {
             int id = JsonSerializer.Deserialize<int>(json);
             using (TestdbContext db = new TestdbContext())
@@ -68,7 +68,7 @@ namespace BackEnd.Controller
                 SendResponse(context, responseText);
             }
         }
-        public async static void UpdatePerson(string json, HttpListenerContext context)
+        public async static void updateCategory(string json, HttpListenerContext context)
         {
             using (TestdbContext db = new TestdbContext())
             {
