@@ -24,6 +24,7 @@ while (true)
             case "manufacturer": ManufacturerController.addManufacturer(query, context); break;
             case "category": CategoryController.addCategory(query, context); break;
             case "location": LocationController.addLocation(query, context); break;
+            case "role": RoleController.addRole(query, context); break;
             case "verifyPasswordPerson": PersonController.chekPassword(query, context); break;
         }
     }
@@ -35,6 +36,7 @@ while (true)
             case "manufacturer": ManufacturerController.getManufacturer(context); break;
             case "category": CategoryController.getCategory(context); break;
             case "location": LocationController.getLocation(context); break;
+            case "role": RoleController.getRole(context); break;
         }
     }
     else if (method == "PUT")
@@ -44,6 +46,7 @@ while (true)
             case "manufacturer": ManufacturerController.updateManufacturer(query, context); break;
             case "category": CategoryController.updateCategory(query, context); break;
             case "location": LocationController.updateLocation(query, context); break;
+            case "role": RoleController.updateRole(query, context); break;
         }
     }
     else if (method == "DELETE")
@@ -54,6 +57,7 @@ while (true)
             case "manufacturer": ManufacturerController.delManufacturer(query, context); break;
             case "category": CategoryController.delCategory(query, context); break;
             case "location": LocationController.delLocation(query, context); break;
+            case "role": RoleController.delRole(query, context); break;
         }
     }
 }
