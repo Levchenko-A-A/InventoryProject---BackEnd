@@ -29,6 +29,10 @@ public partial class TestdbContext : DbContext
 
     public virtual DbSet<Person> Persons { get; set; }
 
+    public virtual DbSet<Personrole> Personroles { get; set; }
+
+    public virtual DbSet<Role> Roles { get; set; }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
         => optionsBuilder.UseNpgsql("Host=192.168.10.99;Port=5432;Database=testdb;Username=debian;Password=toor");
@@ -182,6 +186,44 @@ public partial class TestdbContext : DbContext
             entity.Property(e => e.Salt)
                 .HasMaxLength(255)
                 .HasColumnName("salt");
+        });
+
+        modelBuilder.Entity<Personrole>(entity =>
+        {
+            entity.HasKey(e => e.Userroleid).HasName("personroles_pkey");
+
+            entity.ToTable("personroles");
+
+            entity.HasIndex(e => new { e.Userid, e.Roleid }, "personroles_userid_roleid_key").IsUnique();
+
+            entity.Property(e => e.Userroleid).HasColumnName("userroleid");
+            entity.Property(e => e.Roleid).HasColumnName("roleid");
+            entity.Property(e => e.Userid).HasColumnName("userid");
+
+            entity.HasOne(d => d.Role).WithMany(p => p.Personroles)
+                .HasForeignKey(d => d.Roleid)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("personroles_roleid_fkey");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Personroles)
+                .HasForeignKey(d => d.Userid)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("personroles_userid_fkey");
+        });
+
+        modelBuilder.Entity<Role>(entity =>
+        {
+            entity.HasKey(e => e.Roleid).HasName("roles_pkey");
+
+            entity.ToTable("roles");
+
+            entity.HasIndex(e => e.Rolename, "roles_rolename_key").IsUnique();
+
+            entity.Property(e => e.Roleid).HasColumnName("roleid");
+            entity.Property(e => e.Description).HasColumnName("description");
+            entity.Property(e => e.Rolename)
+                .HasMaxLength(255)
+                .HasColumnName("rolename");
         });
 
         OnModelCreatingPartial(modelBuilder);

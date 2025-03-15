@@ -16,4 +16,6 @@ public partial class Person
     public string Salt { get; set; } = null!;
     [JsonPropertyName("createdat")]
     public DateTime? Createdat { get; set; }
+    [JsonIgnore]
+    public virtual ICollection<Personrole> Personroles { get; set; } = new List<Personrole>();
 }
