@@ -35,9 +35,9 @@ namespace BackEnd.Controller
                 Role? user = await db.Roles.FirstOrDefaultAsync(u => u.Rolename == roles!.Rolename);
                 if (user == null)
                 {
-                    db.Categories.Add(new Category()
+                    db.Roles.Add(new Role()
                     {
-                        Name = roles!.Rolename,
+                        Rolename = roles!.Rolename,
                         Description = roles.Description
                     });
                     await db.SaveChangesAsync();
