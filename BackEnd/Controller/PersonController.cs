@@ -23,6 +23,21 @@ namespace BackEnd.Controller
                 SendResponse(context, responseText);
             }
         }
+        public async static void getPersonId(string json, HttpListenerContext context)
+        {
+            int id = JsonSerializer.Deserialize<int>(json);
+            using (TestdbContext db = new TestdbContext())
+            {
+                Person? person = await db.Persons.FirstOrDefaultAsync(p => p.Personid == id);
+                if(person !=null)
+                {
+                    Console.WriteLine(person.Personname);
+                    string jsonPerson = JsonSerializer.Serialize<Person>(person);
+                    string responseText = jsonPerson;
+                    SendResponse(context, responseText);
+                }
+            }
+        }
         public async static void addPerson(string json, HttpListenerContext context)
         {
             using (TestdbContext db = new TestdbContext())

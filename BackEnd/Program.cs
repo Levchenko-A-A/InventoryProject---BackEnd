@@ -33,11 +33,22 @@ while (true)
     {
         switch (table)
         {
-            case "person": PersonController.getPerson(context); break;
+            case "person":
+                {
+                    if (query == "getPersonAll") PersonController.getPerson(context);
+                    else PersonController.getPersonId(query, context);
+                }
+                break;
             case "manufacturer": ManufacturerController.getManufacturer(context); break;
             case "category": CategoryController.getCategory(context); break;
             case "location": LocationController.getLocation(context); break;
-            case "role": RoleController.getRole(context); break;
+            case "role":
+                {
+                    if (query == "getRolleAll") RoleController.getRole(context);
+                    else RoleController.getRoleId(query, context);
+                }
+                break;
+
             case "personrole": PersonroleController.getPersonRole(context); break; 
         }
     }

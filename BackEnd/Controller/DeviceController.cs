@@ -10,49 +10,38 @@ using System.Threading.Tasks;
 
 namespace BackEnd.Controller
 {
-    class RoleController
+    class DeviceController
     {
-        public async static void getRole(HttpListenerContext context)
+        public async static void getDevices(HttpListenerContext context)
         {
             using (TestdbContext db = new TestdbContext())
             {
-                List<Role> roles = db.Roles.ToList();
-                string json = JsonSerializer.Serialize<List<Role>>(roles);
+                List<Device> devices = db.Devices.ToList();
+                string json = JsonSerializer.Serialize<List<Device>>(devices);
                 string responseText = json;
                 SendResponse(context, responseText);
             }
         }
-        public async static void getRoleId(string json, HttpListenerContext context)
-        {
-            int id = JsonSerializer.Deserialize<int>(json);
-            using (TestdbContext db = new TestdbContext())
-            {
-                Role? role = await db.Roles.FirstOrDefaultAsync(p => p.Roleid == id);
-                if (role != null)
-                {
-                    string jsonPerson = JsonSerializer.Serialize<Role>(role);
-                    string responseText = jsonPerson;
-                    SendResponse(context, responseText);
-                }
-            }
-        }
-        public async static void addRole(string json, HttpListenerContext context)
+        public async static void addDevice(string json, HttpListenerContext context)
         {
             using (TestdbContext db = new TestdbContext())
             {
                 string responseText;
-                Role? roles = JsonSerializer.Deserialize<Role>(json);
-                if (roles == null)
+                Device? device = JsonSerializer.Deserialize<Device>(json);
+                if (device == null)
                 {
                     SendResponse(context, "Ошибка: некорректные данные");
                 }
-                Role? user = await db.Roles.FirstOrDefaultAsync(u => u.Rolename == roles!.Rolename);
-                if (user == null)
+                Device? dev = await db.Devices.FirstOrDefaultAsync(u => u.Name == device!.Name);
+                if (dev == null)
                 {
-                    db.Roles.Add(new Role()
+                    db.Devices.Add(new Device()
                     {
-                        Rolename = roles!.Rolename,
-                        Description = roles.Description
+                        Name = device!.Name,
+                        Categoryid = device.Categoryid,
+                        Manufacturer = device.Manufacturer,
+                        Location = device.Location,
+                        Description = device.Description
                     });
                     await db.SaveChangesAsync();
                     responseText = "OK";
@@ -62,16 +51,16 @@ namespace BackEnd.Controller
                 SendResponse(context, responseText);
             }
         }
-        public async static void delRole(string json, HttpListenerContext context)
+        public async static void delDevice(string json, HttpListenerContext context)
         {
             int id = JsonSerializer.Deserialize<int>(json);
             using (TestdbContext db = new TestdbContext())
             {
                 string responseText;
-                Role roles = db.Roles.Find(id)!;
-                if (roles != null)
+                Device device = db.Devices.Find(id)!;
+                if (device != null)
                 {
-                    db.Roles.Remove(roles);
+                    db.Devices.Remove(device);
                     await db.SaveChangesAsync();
                     responseText = "OK";
                 }
@@ -82,21 +71,24 @@ namespace BackEnd.Controller
                 SendResponse(context, responseText);
             }
         }
-        public async static void updateRole(string json, HttpListenerContext context)
+        public async static void updateDevice(string json, HttpListenerContext context)
         {
             using (TestdbContext db = new TestdbContext())
             {
                 string responseText;
-                Role? temp = JsonSerializer.Deserialize<Role>(json);
+                Device? temp = JsonSerializer.Deserialize<Device>(json);
                 if (temp == null)
                 {
                     responseText = "error";
                 }
                 else
                 {
-                    if (await db.Roles.FindAsync(temp.Roleid) is Role found)
+                    if (await db.Devices.FindAsync(temp.Deviceid) is Device found)
                     {
-                        found.Rolename = temp.Rolename;
+                        found.Name = temp.Name;
+                        found.Category = temp.Category;
+                        found.Manufacturer = temp.Manufacturer;
+                        found.Location = temp.Location;
                         found.Description = temp.Description;
                     }
                     await db.SaveChangesAsync();
