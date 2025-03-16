@@ -26,6 +26,7 @@ while (true)
             case "location": LocationController.addLocation(query, context); break;
             case "role": RoleController.addRole(query, context); break;
             case "personrole": PersonroleController.addPersonRole(query, context); break;
+            case "device": DeviceController.addDevice(query, context); break;
             case "verifyPasswordPerson": PersonController.chekPassword(query, context); break;
         }
     }
@@ -49,7 +50,8 @@ while (true)
                 }
                 break;
 
-            case "personrole": PersonroleController.getPersonRole(context); break; 
+            case "personrole": PersonroleController.getPersonRole(context); break;
+            case "device": DeviceController.getDevices(context); break;
         }
     }
     else if (method == "PUT")
@@ -61,6 +63,7 @@ while (true)
             case "location": LocationController.updateLocation(query, context); break;
             case "role": RoleController.updateRole(query, context); break;
             case "personrole": PersonroleController.updatePersonRole(query, context); break;
+            case "device": DeviceController.updateDevice(query, context); break;
         }
     }
     else if (method == "DELETE")
@@ -73,6 +76,7 @@ while (true)
             case "location": LocationController.delLocation(query, context); break;
             case "role": RoleController.delRole(query, context); break;
             case "personrole": PersonroleController.delPersonRole(query, context); break;
+            case "device": DeviceController.delDevice(query, context); break;
         }
     }
 }
