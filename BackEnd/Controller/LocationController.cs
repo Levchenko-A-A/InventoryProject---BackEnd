@@ -14,7 +14,7 @@ namespace BackEnd.Controller
     {
         public async static void getLocation(HttpListenerContext context)
         {
-            using (TestdbContext db = new TestdbContext())
+            using (DbinventoryContext db = new DbinventoryContext())
             {
                 List<Location> locations = db.Locations.ToList();
                 string json = JsonSerializer.Serialize<List<Location>>(locations);
@@ -24,7 +24,7 @@ namespace BackEnd.Controller
         }
         public async static void addLocation(string json, HttpListenerContext context)
         {
-            using (TestdbContext db = new TestdbContext())
+            using (DbinventoryContext db = new DbinventoryContext())
             {
                 string responseText;
                 Location? locations = JsonSerializer.Deserialize<Location>(json);
@@ -51,7 +51,7 @@ namespace BackEnd.Controller
         public async static void delLocation(string json, HttpListenerContext context)
         {
             int id = JsonSerializer.Deserialize<int>(json);
-            using (TestdbContext db = new TestdbContext())
+            using (DbinventoryContext db = new DbinventoryContext())
             {
                 string responseText;
                 Location locations = db.Locations.Find(id)!;
@@ -70,7 +70,7 @@ namespace BackEnd.Controller
         }
         public async static void updateLocation(string json, HttpListenerContext context)
         {
-            using (TestdbContext db = new TestdbContext())
+            using (DbinventoryContext db = new DbinventoryContext())
             {
                 string responseText;
                 Location? temp = JsonSerializer.Deserialize<Location>(json);

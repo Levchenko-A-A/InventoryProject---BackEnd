@@ -15,7 +15,7 @@ namespace BackEnd.Controller
     {
         public static void getPerson(HttpListenerContext context)
         {
-            using (TestdbContext db = new TestdbContext())
+            using (DbinventoryContext db = new DbinventoryContext())
             {
                 List<Person> clients = db.Persons.ToList();
                 string json = JsonSerializer.Serialize<List<Person>>(clients);
@@ -26,7 +26,7 @@ namespace BackEnd.Controller
         public async static void getPersonId(string json, HttpListenerContext context)
         {
             int id = JsonSerializer.Deserialize<int>(json);
-            using (TestdbContext db = new TestdbContext())
+            using (DbinventoryContext db = new DbinventoryContext())
             {
                 Person? person = await db.Persons.FirstOrDefaultAsync(p => p.Personid == id);
                 if(person !=null)
@@ -40,7 +40,7 @@ namespace BackEnd.Controller
         }
         public async static void addPerson(string json, HttpListenerContext context)
         {
-            using (TestdbContext db = new TestdbContext())
+            using (DbinventoryContext db = new DbinventoryContext())
             {
                 string responseText;
                 Person? person = JsonSerializer.Deserialize<Person>(json);
@@ -79,7 +79,7 @@ namespace BackEnd.Controller
         public async static void delPerson(string json, HttpListenerContext context)
         {
             int id = JsonSerializer.Deserialize<int>(json);
-            using (TestdbContext db = new TestdbContext())
+            using (DbinventoryContext db = new DbinventoryContext())
             {
                 string responseText;
                 Person person = db.Persons.Find(id)!;
@@ -98,7 +98,7 @@ namespace BackEnd.Controller
         }
         public async static void UpdatePerson(string json, HttpListenerContext context)
         {
-            using (TestdbContext db = new TestdbContext())
+            using (DbinventoryContext db = new DbinventoryContext())
             {
                 Person? temp = JsonSerializer.Deserialize<Person>(json);
                 if (await db.Persons.FindAsync(temp.Personid) is Person found)
@@ -115,7 +115,7 @@ namespace BackEnd.Controller
         public async static void chekPassword(string json, HttpListenerContext context)
         {
             string answer;
-            using (TestdbContext db = new TestdbContext())
+            using (DbinventoryContext db = new DbinventoryContext())
             {
                 var jsonUser = JsonSerializer.Deserialize<JsonUser>(json);
                 if (jsonUser == null)

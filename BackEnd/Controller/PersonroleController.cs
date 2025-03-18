@@ -14,7 +14,7 @@ namespace BackEnd.Controller
     {
         public async static void getPersonRole(HttpListenerContext context)
         {
-            using (TestdbContext db = new TestdbContext())
+            using (DbinventoryContext db = new DbinventoryContext())
             {
                 List<Personrole> personRoles = db.Personroles.ToList();
                 string json = JsonSerializer.Serialize<List<Personrole>>(personRoles);
@@ -24,7 +24,7 @@ namespace BackEnd.Controller
         }
         public async static void addPersonRole(string json, HttpListenerContext context)
         {
-            using (TestdbContext db = new TestdbContext())
+            using (DbinventoryContext db = new DbinventoryContext())
             {
                 string responseText;
                 Personrole? personRoles = JsonSerializer.Deserialize<Personrole>(json);
@@ -32,12 +32,12 @@ namespace BackEnd.Controller
                 {
                     SendResponse(context, "Ошибка: некорректные данные");
                 }
-                Personrole? user = await db.Personroles.FirstOrDefaultAsync(u => u.Userid == personRoles!.Userid && u.Roleid == personRoles!.Roleid);
+                Personrole? user = await db.Personroles.FirstOrDefaultAsync(u => u.Personid == personRoles!.Personid && u.Roleid == personRoles!.Roleid);
                 if (user == null)
                 {
                     db.Personroles.Add(new Personrole()
                     {
-                        Userid = personRoles!.Userid,
+                        Personid = personRoles!.Personid,
                         Roleid = personRoles.Roleid
                     });
                     await db.SaveChangesAsync();
@@ -51,7 +51,7 @@ namespace BackEnd.Controller
         public async static void delPersonRole(string json, HttpListenerContext context)
         {
             int id = JsonSerializer.Deserialize<int>(json);
-            using (TestdbContext db = new TestdbContext())
+            using (DbinventoryContext db = new DbinventoryContext())
             {
                 string responseText;
                 Personrole personRoles = db.Personroles.Find(id)!;
@@ -70,7 +70,7 @@ namespace BackEnd.Controller
         }
         public async static void updatePersonRole(string json, HttpListenerContext context)
         {
-            using (TestdbContext db = new TestdbContext())
+            using (DbinventoryContext db = new DbinventoryContext())
             {
                 string responseText;
                 Personrole? temp = JsonSerializer.Deserialize<Personrole>(json);
@@ -80,9 +80,9 @@ namespace BackEnd.Controller
                 }
                 else
                 {
-                    if (await db.Personroles.FindAsync(temp.Userroleid) is Personrole found)
+                    if (await db.Personroles.FindAsync(temp.Personroleid) is Personrole found)
                     {
-                        found.Userid = temp.Userid;
+                        found.Personid = temp.Personid;
                         found.Roleid = temp.Roleid;
                     }
                     await db.SaveChangesAsync();

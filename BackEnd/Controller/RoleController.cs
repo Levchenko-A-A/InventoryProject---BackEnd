@@ -14,7 +14,7 @@ namespace BackEnd.Controller
     {
         public async static void getRole(HttpListenerContext context)
         {
-            using (TestdbContext db = new TestdbContext())
+            using (DbinventoryContext db = new DbinventoryContext())
             {
                 List<Role> roles = db.Roles.ToList();
                 string json = JsonSerializer.Serialize<List<Role>>(roles);
@@ -25,7 +25,7 @@ namespace BackEnd.Controller
         public async static void getRoleId(string json, HttpListenerContext context)
         {
             int id = JsonSerializer.Deserialize<int>(json);
-            using (TestdbContext db = new TestdbContext())
+            using (DbinventoryContext db = new DbinventoryContext())
             {
                 Role? role = await db.Roles.FirstOrDefaultAsync(p => p.Roleid == id);
                 if (role != null)
@@ -38,7 +38,7 @@ namespace BackEnd.Controller
         }
         public async static void addRole(string json, HttpListenerContext context)
         {
-            using (TestdbContext db = new TestdbContext())
+            using (DbinventoryContext db = new DbinventoryContext())
             {
                 string responseText;
                 Role? roles = JsonSerializer.Deserialize<Role>(json);
@@ -65,7 +65,7 @@ namespace BackEnd.Controller
         public async static void delRole(string json, HttpListenerContext context)
         {
             int id = JsonSerializer.Deserialize<int>(json);
-            using (TestdbContext db = new TestdbContext())
+            using (DbinventoryContext db = new DbinventoryContext())
             {
                 string responseText;
                 Role roles = db.Roles.Find(id)!;
@@ -84,7 +84,7 @@ namespace BackEnd.Controller
         }
         public async static void updateRole(string json, HttpListenerContext context)
         {
-            using (TestdbContext db = new TestdbContext())
+            using (DbinventoryContext db = new DbinventoryContext())
             {
                 string responseText;
                 Role? temp = JsonSerializer.Deserialize<Role>(json);

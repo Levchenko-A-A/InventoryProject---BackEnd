@@ -14,7 +14,7 @@ namespace BackEnd.Controller
     {
         public async static void getDevices(HttpListenerContext context)
         {
-            using (TestdbContext db = new TestdbContext())
+            using (DbinventoryContext db = new DbinventoryContext())
             {
                 List<Device> devices = db.Devices.ToList();
                 string json = JsonSerializer.Serialize<List<Device>>(devices);
@@ -24,7 +24,7 @@ namespace BackEnd.Controller
         }
         public async static void addDevice(string json, HttpListenerContext context)
         {
-            using (TestdbContext db = new TestdbContext())
+            using (DbinventoryContext db = new DbinventoryContext())
             {
                 string responseText;
                 Device? device = JsonSerializer.Deserialize<Device>(json);
@@ -54,7 +54,7 @@ namespace BackEnd.Controller
         public async static void delDevice(string json, HttpListenerContext context)
         {
             int id = JsonSerializer.Deserialize<int>(json);
-            using (TestdbContext db = new TestdbContext())
+            using (DbinventoryContext db = new DbinventoryContext())
             {
                 string responseText;
                 Device device = db.Devices.Find(id)!;
@@ -72,8 +72,8 @@ namespace BackEnd.Controller
             }
         }
         public async static void updateDevice(string json, HttpListenerContext context)
-        {
-            using (TestdbContext db = new TestdbContext())
+        {   
+            using (DbinventoryContext db = new DbinventoryContext())
             {
                 string responseText;
                 Device? temp = JsonSerializer.Deserialize<Device>(json);

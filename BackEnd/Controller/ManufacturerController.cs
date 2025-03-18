@@ -14,7 +14,7 @@ namespace BackEnd.Controller
     {
         public async static void getManufacturer(HttpListenerContext context)
         {
-            using (TestdbContext db = new TestdbContext())
+            using (DbinventoryContext db = new DbinventoryContext())
             {
                 List<Manufacturer> manufacturer = db.Manufacturers.ToList();
                 string json = JsonSerializer.Serialize<List<Manufacturer>>(manufacturer);
@@ -24,7 +24,7 @@ namespace BackEnd.Controller
         }
         public async static void addManufacturer(string json, HttpListenerContext context)
         {
-            using (TestdbContext db = new TestdbContext())
+            using (DbinventoryContext db = new DbinventoryContext())
             {
                 string responseText;
                 Manufacturer? manufacturer = JsonSerializer.Deserialize<Manufacturer>(json);
@@ -60,7 +60,7 @@ namespace BackEnd.Controller
         public async static void delManufacturer(string json, HttpListenerContext context)
         {
             int id = JsonSerializer.Deserialize<int>(json);
-            using (TestdbContext db = new TestdbContext())
+            using (DbinventoryContext db = new DbinventoryContext())
             {
                 string responseText;
                 Manufacturer manufacturer = db.Manufacturers.Find(id)!;
@@ -79,7 +79,7 @@ namespace BackEnd.Controller
         }
         public async static void updateManufacturer(string json, HttpListenerContext context)
         {
-            using (TestdbContext db = new TestdbContext())
+            using (DbinventoryContext db = new DbinventoryContext())
             {
                 string responseText;
                 Manufacturer? temp = JsonSerializer.Deserialize<Manufacturer>(json);

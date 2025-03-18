@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using BackEnd.Controller;
+//Scaffold-DbContext "Host=193.104.57.148;Port=5432;Database=dbinventory;Username=debianone;Password=toor" Npgsql.EntityFrameworkCore.PostgreSQL
 
 HttpClient httpClient = new HttpClient();
 HttpListener server = new HttpListener();

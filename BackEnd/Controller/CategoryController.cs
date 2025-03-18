@@ -14,7 +14,7 @@ namespace BackEnd.Controller
     {
         public async static void getCategory(HttpListenerContext context)
         {
-            using (TestdbContext db = new TestdbContext())
+            using (DbinventoryContext db = new DbinventoryContext())
             {
                 List<Category> categories = db.Categories.ToList();
                 string json = JsonSerializer.Serialize<List<Category>>(categories);
@@ -24,7 +24,7 @@ namespace BackEnd.Controller
         }
         public async static void addCategory(string json, HttpListenerContext context)
         {
-            using (TestdbContext db = new TestdbContext())
+            using (DbinventoryContext db = new DbinventoryContext())
             {
                 string responseText;
                 Category? categories = JsonSerializer.Deserialize<Category>(json);
@@ -51,7 +51,7 @@ namespace BackEnd.Controller
         public async static void delCategory(string json, HttpListenerContext context)
         {
             int id = JsonSerializer.Deserialize<int>(json);
-            using (TestdbContext db = new TestdbContext())
+            using (DbinventoryContext db = new DbinventoryContext())
             {
                 string responseText;
                 Category categories = db.Categories.Find(id)!;
@@ -70,7 +70,7 @@ namespace BackEnd.Controller
         }
         public async static void updateCategory(string json, HttpListenerContext context)
         {
-            using (TestdbContext db = new TestdbContext())
+            using (DbinventoryContext db = new DbinventoryContext())
             {
                 string responseText;
                 Category? temp = JsonSerializer.Deserialize<Category>(json);

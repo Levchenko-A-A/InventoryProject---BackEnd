@@ -4,13 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BackEnd.Model;
 
-public partial class TestdbContext : DbContext
+public partial class DbinventoryContext : DbContext
 {
-    public TestdbContext()
+    public DbinventoryContext()
     {
     }
 
-    public TestdbContext(DbContextOptions<TestdbContext> options)
+    public DbinventoryContext(DbContextOptions<DbinventoryContext> options)
         : base(options)
     {
     }
@@ -35,7 +35,7 @@ public partial class TestdbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseNpgsql("Host=192.168.10.99;Port=5432;Database=testdb;Username=debian;Password=toor");
+        => optionsBuilder.UseNpgsql("Host=193.104.57.148;Port=5432;Database=dbinventory;Username=debianone;Password=toor");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -190,25 +190,25 @@ public partial class TestdbContext : DbContext
 
         modelBuilder.Entity<Personrole>(entity =>
         {
-            entity.HasKey(e => e.Userroleid).HasName("personroles_pkey");
+            entity.HasKey(e => e.Personroleid).HasName("personroles_pkey");
 
             entity.ToTable("personroles");
 
-            entity.HasIndex(e => new { e.Userid, e.Roleid }, "personroles_userid_roleid_key").IsUnique();
+            entity.HasIndex(e => new { e.Personid, e.Roleid }, "personroles_personid_roleid_key").IsUnique();
 
-            entity.Property(e => e.Userroleid).HasColumnName("userroleid");
+            entity.Property(e => e.Personroleid).HasColumnName("personroleid");
+            entity.Property(e => e.Personid).HasColumnName("personid");
             entity.Property(e => e.Roleid).HasColumnName("roleid");
-            entity.Property(e => e.Userid).HasColumnName("userid");
+
+            entity.HasOne(d => d.Person).WithMany(p => p.Personroles)
+                .HasForeignKey(d => d.Personid)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("personroles_personid_fkey");
 
             entity.HasOne(d => d.Role).WithMany(p => p.Personroles)
                 .HasForeignKey(d => d.Roleid)
                 .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("personroles_roleid_fkey");
-
-            entity.HasOne(d => d.User).WithMany(p => p.Personroles)
-                .HasForeignKey(d => d.Userid)
-                .OnDelete(DeleteBehavior.Cascade)
-                .HasConstraintName("personroles_userid_fkey");
         });
 
         modelBuilder.Entity<Role>(entity =>
