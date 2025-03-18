@@ -6,11 +6,11 @@ namespace BackEnd.Model;
 
 public partial class Personrole
 {
-    [JsonPropertyName("Personroleid")]
+    [JsonPropertyName("personroleid")]
     public int Personroleid { get; set; }
-    [JsonPropertyName("Personid")]
+    [JsonPropertyName("personid")]
     public int? Personid { get; set; }
-    [JsonPropertyName("Roleid")]
+    [JsonPropertyName("roleid")]
     public int? Roleid { get; set; }
     [JsonIgnore]
     public virtual Person? Person { get; set; }
