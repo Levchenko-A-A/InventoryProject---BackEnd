@@ -22,6 +22,21 @@ namespace BackEnd.Controller
                 SendResponse(context, responseText);
             }
         }
+        public async static void getCategoryId(string json, HttpListenerContext context)
+        {
+            int id = JsonSerializer.Deserialize<int>(json);
+            using (DbinventoryContext db = new DbinventoryContext())
+            {
+                Category? category = await db.Categories.FirstOrDefaultAsync(p => p.Categoryid == id);
+                if (category != null)
+                {
+                    Console.WriteLine(category.Name);
+                    string jsonPerson = JsonSerializer.Serialize<Category>(category);
+                    string responseText = jsonPerson;
+                    SendResponse(context, responseText);
+                }
+            }
+        }
         public async static void addCategory(string json, HttpListenerContext context)
         {
             using (DbinventoryContext db = new DbinventoryContext())

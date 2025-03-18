@@ -22,6 +22,21 @@ namespace BackEnd.Controller
                 SendResponse(context, responseText);
             }
         }
+        public async static void getCategoryId(string json, HttpListenerContext context)
+        {
+            int id = JsonSerializer.Deserialize<int>(json);
+            using (DbinventoryContext db = new DbinventoryContext())
+            {
+                Location? location = await db.Locations.FirstOrDefaultAsync(p => p.Locationid == id);
+                if (location != null)
+                {
+                    Console.WriteLine(location.Name);
+                    string jsonPerson = JsonSerializer.Serialize<Location>(location);
+                    string responseText = jsonPerson;
+                    SendResponse(context, responseText);
+                }
+            }
+        }
         public async static void addLocation(string json, HttpListenerContext context)
         {
             using (DbinventoryContext db = new DbinventoryContext())

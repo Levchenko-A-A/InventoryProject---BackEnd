@@ -45,16 +45,22 @@ namespace BackEnd.Controller
                 }
                 else
                     responseText = "Error";
-
-                var response = context.Response;
-                byte[] buffer = Encoding.UTF8.GetBytes(responseText);
-                response.ContentLength64 = buffer.Length;
-                response.ContentType = "text/html";
-                response.ContentEncoding = Encoding.UTF8;
-                using Stream output = response.OutputStream;
-                await output.WriteAsync(buffer);
-                await output.FlushAsync();
-                Console.WriteLine("Запрос обработан");
+                SendResponse(context, responseText);
+            }
+        }
+        public async static void getCategoryId(string json, HttpListenerContext context)
+        {
+            int id = JsonSerializer.Deserialize<int>(json);
+            using (DbinventoryContext db = new DbinventoryContext())
+            {
+                Manufacturer? manuf = await db.Manufacturers.FirstOrDefaultAsync(p => p.Manufacturerid == id);
+                if (manuf != null)
+                {
+                    Console.WriteLine(manuf.Name);
+                    string jsonPerson = JsonSerializer.Serialize<Manufacturer>(manuf);
+                    string responseText = jsonPerson;
+                    SendResponse(context, responseText);
+                }
             }
         }
         public async static void delManufacturer(string json, HttpListenerContext context)

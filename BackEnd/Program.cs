@@ -41,9 +41,24 @@ while (true)
                     else PersonController.getPersonId(query, context);
                 }
                 break;
-            case "manufacturer": ManufacturerController.getManufacturer(context); break;
-            case "category": CategoryController.getCategory(context); break;
-            case "location": LocationController.getLocation(context); break;
+            case "manufacturer":
+                {
+                    if (query == "getManufacturerAll") ManufacturerController.getManufacturer(context);
+                    else ManufacturerController.getCategoryId(query, context);
+                }
+                break;
+            case "category":
+                {
+                    if (query == "getCategoryAll") CategoryController.getCategory(context);
+                    else CategoryController.getCategoryId(query, context);
+                }
+                break;
+            case "location":
+                {
+                    if (query == "getLocationAll") LocationController.getLocation(context);
+                    else LocationController.getCategoryId(query, context);
+                }
+                break;
             case "role":
                 {
                     if (query == "getRolleAll") RoleController.getRole(context);
